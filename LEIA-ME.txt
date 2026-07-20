@@ -1,0 +1,13 @@
+CANDY THINKING - MASTERS NO CANDY CCS
+
+Vídeos já incluídos:
+- NOVO_TRABALHO.mp4
+- SHIFT_B.mp4
+- SHIFT_P.mp4
+- SHIFT_R.mp4
+- SHIFT_I.mp4
+
+Vídeos a adicionar depois, exatamente com estes nomes:
+- IMPORTAR_RECURSOS.mp4
+- REUTILIZAR_PRICE_CODES.mp4
+- COMPARAR_PRECOS.mp4

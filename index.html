@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Masters no Candy CCS · Candy Thinking</title>
+<style>
+:root{
+  --bg:#153448;
+  --deep:#102838;
+  --panel:#1d4358;
+  --panel2:#244e64;
+  --line:rgba(255,255,255,.13);
+  --text:#f5f8fb;
+  --muted:#b9c9d4;
+  --blue:#45a7ff;
+  --orange:#ff922b;
+  --green:#39c27f;
+  --red:#ff6b6b;
+  --yellow:#f6c344;
+  --shadow:0 22px 60px rgba(0,0,0,.25)
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+body{overflow:hidden}
+button{font:inherit}
+.app{height:100vh;display:grid;grid-template-rows:auto 1fr auto}
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:13px 20px;background:rgba(16,40,56,.97);border-bottom:1px solid var(--line)
+}
+.brand{display:flex;gap:12px;align-items:center}
+
+.brand small{display:block;color:var(--muted)}
+.top-status{color:var(--muted);font-size:13px}
+.stage{position:relative;overflow:hidden}
+.screen{
+  position:absolute;inset:0;display:none;padding:28px;overflow:auto;
+  background:
+    radial-gradient(circle at 85% 15%,rgba(69,167,255,.14),transparent 28%),
+    radial-gradient(circle at 10% 85%,rgba(255,146,43,.09),transparent 26%),
+    linear-gradient(180deg,var(--bg) 0%,var(--deep) 100%)
+}
+.screen.active{display:block}
+.wrap{width:min(1180px,100%);margin:0 auto}
+.hero{min-height:calc(100vh - 170px);display:grid;place-items:center;text-align:center}
+.hero-inner{width:min(1060px,100%);padding:28px}
+.eyebrow{font-size:13px;letter-spacing:2.7px;text-transform:uppercase;color:var(--blue);font-weight:800}
+h1{font-size:clamp(42px,6vw,82px);line-height:1.02;margin:12px 0 14px}
+h2{font-size:clamp(30px,4vw,56px);line-height:1.08;margin:10px 0 20px}
+h3{margin:0 0 8px}
+p{line-height:1.55}
+.lead{font-size:clamp(19px,2.05vw,27px);color:var(--muted);max-width:860px;margin:0 auto}
+.slogan{margin-top:26px;font-size:20px}
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:32px auto 0;max-width:1000px}
+.meta-item{background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:18px;padding:16px;text-align:left;min-height:100px}
+.meta-item b{display:block;margin-bottom:6px}
+.meta-item span{color:var(--muted);font-size:14px}
+.panel{background:rgba(29,67,88,.88);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:30px}
+.btn{
+  border:1px solid var(--line);background:rgba(255,255,255,.06);color:white;
+  border-radius:14px;padding:12px 18px;cursor:pointer;font-weight:800
+}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:var(--orange);border-color:var(--orange);color:#17242d}
+.btn.blue{background:var(--blue);border-color:var(--blue);color:#102838}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.card{background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:18px;padding:18px}
+.card strong{display:block;margin-bottom:7px}
+.card p,.card span{color:var(--muted)}
+.card.highlight{border-color:rgba(255,146,43,.48);background:rgba(255,146,43,.09)}
+.card.success{border-color:rgba(57,194,127,.46);background:rgba(57,194,127,.08)}
+.card.warning{border-color:rgba(246,195,68,.46);background:rgba(246,195,68,.075)}
+.card.risk{border-color:rgba(255,107,107,.46);background:rgba(255,107,107,.07)}
+.key-idea{margin:20px auto 0;max-width:930px;padding:18px 20px;border-radius:18px;background:rgba(255,146,43,.12);border:1px solid rgba(255,146,43,.45);font-size:20px;text-align:center}
+.instruction{display:flex;align-items:center;gap:10px;margin:18px 0;padding:14px 16px;background:rgba(69,167,255,.12);border:1px solid rgba(69,167,255,.36);border-radius:15px;font-weight:800}
+.path{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:28px 0}
+.path-step{min-width:145px;padding:14px 16px;border-radius:17px;background:rgba(255,255,255,.055);border:1px solid var(--line);text-align:center;font-weight:900}
+.path-step b{color:var(--orange)}
+.arrow{color:var(--blue);font-size:24px}
+.options{display:grid;gap:12px}
+.option{
+  display:flex;align-items:flex-start;gap:14px;padding:17px 18px;border-radius:17px;
+  border:1px solid var(--line);background:rgba(255,255,255,.05);cursor:pointer
+}
+.option.selected{border-color:var(--orange);background:rgba(255,146,43,.10)}
+.radio{width:22px;height:22px;border-radius:50%;border:2px solid var(--muted);flex:0 0 auto;display:grid;place-items:center}
+.option.selected .radio{border-color:var(--orange)}
+.option.selected .radio:after{content:"";width:10px;height:10px;border-radius:50%;background:var(--orange)}
+.feedback{display:none;margin-top:16px;padding:18px;border-radius:16px;background:rgba(255,255,255,.055);border-left:5px solid var(--blue)}
+.feedback.show{display:block}
+.branch-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px}
+.branch{
+  text-align:left;min-height:180px;padding:20px;border-radius:20px;cursor:pointer;
+  background:rgba(255,255,255,.055);border:1px solid var(--line);color:white
+}
+.branch:hover{border-color:var(--blue);background:rgba(69,167,255,.09)}
+.branch .tag{display:inline-block;font-size:12px;color:var(--blue);letter-spacing:1px;text-transform:uppercase;font-weight:800;margin-bottom:10px}
+.branch p{color:var(--muted)}
+.media-placeholder{
+  aspect-ratio:16/9;border:2px dashed rgba(255,255,255,.24);border-radius:20px;
+  background:rgba(255,255,255,.035);display:grid;place-items:center;text-align:center;padding:28px
+}
+.media-placeholder strong{font-size:22px}
+.media-placeholder span{color:var(--muted)}
+.shortcuts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.shortcut{padding:18px;border-radius:18px;background:rgba(255,255,255,.055);border:1px solid var(--line)}
+.shortcut kbd{display:inline-block;padding:7px 10px;border-radius:10px;background:#0d2230;border:1px solid rgba(255,255,255,.18);font-weight:900;color:var(--orange);margin-bottom:9px}
+.timeline{display:grid;gap:12px}
+.step{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start;padding:14px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid var(--line)}
+.step-num{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(69,167,255,.15);color:var(--blue);font-weight:900}
+.footer{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:12px 18px;background:#102838;border-top:1px solid var(--line)}
+.nav{display:flex;gap:8px}
+.progress{height:9px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.bar{height:100%;width:5%;background:linear-gradient(90deg,var(--blue),var(--orange));transition:.25s}
+.counter{font-size:13px;color:var(--muted);min-width:120px;text-align:right}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:#fff;color:#182532;padding:13px 17px;border-radius:14px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;max-width:80vw;text-align:center;z-index:2000}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal{
+  position:fixed;inset:0;z-index:1000;background:rgba(5,18,27,.86);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;padding:24px
+}
+.modal.open{display:flex}
+.modal-card{
+  width:min(1120px,100%);max-height:92vh;overflow:auto;background:linear-gradient(180deg,#1b4055,#102838);
+  border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow)
+}
+.modal-head{
+  position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;
+  padding:16px 20px;background:rgba(16,40,56,.96);border-bottom:1px solid var(--line)
+}
+.modal-body{padding:26px}
+.subscreen{display:none}
+.subscreen.active{display:block}
+.sub-footer{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:16px 20px;border-top:1px solid var(--line);background:rgba(16,40,56,.9)}
+.sub-progress{font-size:13px;color:var(--muted)}
+.profile{font-size:clamp(34px,5vw,70px);color:var(--orange);font-weight:900;margin:18px 0}
+@media(max-width:950px){
+  .meta,.grid-4,.grid-3,.grid-2,.shortcuts{grid-template-columns:1fr 1fr}
+  .branch-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  body{overflow:auto}.app{height:auto;min-height:100vh}
+  .screen{position:relative;display:none}
+  .meta,.grid-4,.grid-3,.grid-2,.shortcuts{grid-template-columns:1fr}
+  .footer{grid-template-columns:1fr}.counter{text-align:left}
+  .top-status{display:none}
+}
+
+.hero-grid{width:min(1120px,100%);display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:center}.hero-copy{text-align:left}.hero-brain{display:flex;justify-content:center;align-items:center}.brain-crop{width:min(500px,100%);height:540px;overflow:hidden;position:relative;border-radius:26px}.brain-crop img{position:absolute;width:150%;max-width:none;right:-2%;top:-3%;height:auto;filter:drop-shadow(0 18px 38px rgba(0,0,0,.35))}.hierarchy{display:grid;gap:12px}.h-row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.h-row.small{grid-template-columns:repeat(7,1fr)}.h-card{background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:17px;padding:16px}.h-card.primary{border-color:rgba(69,167,255,.5);background:rgba(69,167,255,.08)}.h-card.secondary{border-color:rgba(255,146,43,.45);background:rgba(255,146,43,.07)}.h-card.center{text-align:center;padding:13px 10px;font-size:13px;font-weight:800}.video-wrap{width:min(800px,100%);margin:0 auto;background:#06131d;border:1px solid var(--line);border-radius:18px;padding:10px}.video-wrap video{width:100%;max-height:58vh;display:block;border-radius:12px;background:#000;object-fit:contain}.video-slot{position:relative}.video-missing{position:absolute;inset:10px;display:grid;place-items:center;text-align:center;padding:24px;background:linear-gradient(180deg,rgba(6,19,29,.88),rgba(6,19,29,.96));border-radius:12px;color:var(--muted);pointer-events:none}.video-missing strong{display:block;color:#fff;font-size:20px;margin-bottom:6px}.sub-nav-top{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line)}.sub-count{text-align:center;color:var(--muted);font-size:13px}.case-steps{display:none;margin-top:18px}.case-steps.show{display:grid}@media(max-width:1000px){.hero-grid{grid-template-columns:1fr}.hero-copy{text-align:center}.h-row,.h-row.small{grid-template-columns:1fr 1fr}}@media(max-width:700px){.h-row,.h-row.small{grid-template-columns:1fr}}
+.hero-cover{max-width:1050px;margin:0 auto;text-align:center;padding:54px 48px;background:
+linear-gradient(180deg,rgba(31,75,98,.94),rgba(21,56,75,.94));
+position:relative;overflow:hidden}
+.hero-cover:before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;left:-170px;top:-210px;background:radial-gradient(circle,rgba(69,167,255,.15),transparent 68%);pointer-events:none}
+.hero-cover:after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;right:-170px;bottom:-230px;background:radial-gradient(circle,rgba(255,138,0,.13),transparent 68%);pointer-events:none}
+.hero-cover>*{position:relative;z-index:1}
+.hero-cover .lead{margin-left:auto;margin-right:auto}
+.hero-cover .slogan{font-size:22px}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand">
+    <div><strong>CANDY THINKING</strong></div>
+  </div>
+  <div class="top-status"><strong>Masters no Candy CCS</strong></div>
+</header>
+<main class="stage">
+<section class="screen active">
+  <div class="hero">
+    <div class="wrap">
+      <div class="panel hero-cover">
+        <div class="eyebrow">Candy Thinking</div>
+        <h1>Masters no Candy CCS</h1>
+        <p class="lead">Maximizar a Eficiência na Preparação de Orçamentos</p>
+        <div class="slogan">Mais do que ensinar o Candy.<br><strong>Ensinar a trabalhar melhor com ele.</strong></div>
+        <div class="meta">
+          <div class="meta-item"><b>20–26 min</b><span>Duração estimada</span></div>
+          <div class="meta-item"><b>Profissionais</b><span>Da construção</span></div>
+          <div class="meta-item"><b>Computador</b><span>Recomendado</span></div>
+          <div class="meta-item"><b>Interativo</b><span>E prático</span></div>
+        </div>
+        <div class="btn-row"><button class="btn primary" id="startBtn">COMEÇAR →</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="screen"><div class="wrap"><div class="panel"><div class="eyebrow">O problema</div><h2>Porque é que continuamos a começar do zero?</h2><p class="lead" style="margin:0 0 18px">Em cada novo orçamento, partimos de um novo projeto. <strong style="color:#fff">Mas isso não significa que todo o trabalho tenha de começar novamente.</strong></p><div class="grid grid-4"><div class="card highlight"><strong>Novo concurso</strong><span>O prazo começa a contar.</span></div><div class="card"><strong>Novo orçamento</strong><span>A estrutura volta a ser criada.</span></div><div class="card"><strong>Nova composição</strong><span>Criam-se novos Price Codes.</span></div><div class="card"><strong>Conhecimento existente</strong><span>Usam-se recursos do Master, mas fichas, códigos e critérios anteriormente desenvolvidos nem sempre são aproveitados.</span></div></div><div class="key-idea"><strong>Funciona. Mas pode funcionar muito melhor.</strong><br/><span style="font-size:15px;color:var(--muted)">É aqui que começa o nosso percurso pelos Masters no Candy CCS.</span></div></div></div></section>
+<section class="screen">
+<div class="wrap"><div class="panel">
+<div class="eyebrow">Diagnóstico</div>
+<h2>O que acontece mais vezes na tua realidade?</h2>
+<div class="options" id="diag">
+<div class="option" data-fb="Há conhecimento, mas está disperso. O tempo perde-se a procurar e a reconstruir."><div class="radio"></div><strong>Procuramos informação em vários trabalhos anteriores.</strong></div>
+<div class="option" data-fb="Este é um erro muito frequente: trazer recursos e voltar a compor um Price Code que já existia."><div class="radio"></div><strong>Importamos os recursos e voltamos a construir os Price Codes.</strong></div>
+<div class="option" data-fb="Copiar pode ser rápido, mas sem validação pode transportar preços, produtividades e critérios inadequados."><div class="radio"></div><strong>Copiamos fichas, mas só validamos no fim.</strong></div>
+<div class="option" data-fb="Excelente ponto de partida. O Master deve continuar a evoluir com cada novo trabalho validado."><div class="radio"></div><strong>Utilizamos um Master estruturado e atualizado.</strong></div>
+</div>
+<div class="feedback" id="diagFb"></div>
+</div></div>
+</section>
+<section class="screen"><div class="wrap"><div class="panel"><div class="eyebrow">O conceito</div><h2>Um Master não é apenas uma lista de recursos.</h2><div class="hierarchy"><div class="h-row"><div class="h-card primary"><strong>TRADE CODES</strong><p>Estruturam e classificam os Price Codes. A primeira letra do Price Code corresponde ao respetivo Trade Code.</p></div><div class="h-card primary"><strong>RESOURCE TYPES</strong><p>Estruturam e classificam os recursos. O tipo de recurso define a lógica de codificação dos Resource Codes.</p></div></div><div class="h-row"><div class="h-card secondary"><strong>PRICE CODES</strong><p>Fichas já estruturadas (Worksheets), com lógica de cálculo, recursos, variáveis, produções e fatores, prontas a reutilizar ou adaptar.</p></div><div class="h-card secondary"><strong>RESOURCE CODES</strong><p>Recursos simples e complexos, associados ao respetivo Resource Type, com preços e informação associada.</p></div></div><div class="h-row small"><div class="h-card center">Task Codes</div><div class="h-card center">Work Codes</div><div class="h-card center">Tax Codes</div><div class="h-card center">Currency Codes</div><div class="h-card center">Indiretos</div><div class="h-card center">Relatórios</div><div class="h-card center">Definições do trabalho</div></div></div><div class="key-idea"><strong>Qualquer trabalho pode ser usado como Master. Mas nem todos os trabalhos são bons Masters.</strong><br/><span style="font-size:15px;color:var(--muted)">Um bom Master reúne soluções técnicas anteriormente desenvolvidas, estruturadas e validadas pela organização.</span></div></div></div></section>
+<section class="screen"><div class="wrap"><div class="panel"><div class="eyebrow">Escolher bem</div><h2>O melhor Master não é necessariamente o trabalho mais recente.</h2><div class="grid grid-2"><div class="card success"><strong>Um bom Master</strong><p>Está organizado, validado, coerente, pesquisável e suficientemente abrangente.</p></div><div class="card warning"><strong>Um Master frágil</strong><p>Tem códigos inconsistentes, preços antigos sem referência e informação específica de uma obra.</p></div></div><div class="instruction">Antes de começar, pergunta: este trabalho ajuda-me a avançar ou obriga-me a corrigir quase tudo?</div><div class="btn-row"><button class="btn blue branch-open" data-branch="start">Explorar: começar um trabalho</button></div></div></div></section>
+<section class="screen"><div class="wrap"><div class="panel"><div class="eyebrow">Herdar, consultar, reutilizar e validar</div><h2>Quatro ações diferentes.</h2><div class="grid grid-4"><div class="card" style="border-color:rgba(69,167,255,.55);background:rgba(69,167,255,.08)"><strong>Herdar</strong><p>Receber definições no momento em que o trabalho é criado.</p></div><div class="card" style="border-color:rgba(89,196,255,.42);background:rgba(89,196,255,.06)"><strong>Consultar</strong><p>Abrir documentos do Master sem copiar imediatamente.</p></div><div class="card" style="border-color:rgba(255,146,43,.5);background:rgba(255,146,43,.07)"><strong>Reutilizar</strong><p>Trazer estruturas, Price Codes, recursos ou informação útil.</p></div><div class="card" style="border-color:rgba(57,194,127,.48);background:rgba(57,194,127,.07)"><strong>Validar</strong><p>Confirmar preços, produtividade, âmbito, unidades e contexto.</p></div></div><div class="key-idea">O Master é uma referência de trabalho, não uma verdade automática.</div></div></div></section>
+<section class="screen"><div class="wrap"><div class="panel"><div class="eyebrow">Acesso rápido</div><h2>Consultar o Master sem sair do documento em que está a trabalhar.</h2><div class="shortcuts"><div class="shortcut"><kbd>Shift + B ou Shift + BQ</kbd><strong>Master Bill of Quantities</strong><p>Consultar e reutilizar informação do Bill of Quantities do Master.</p></div><div class="shortcut"><kbd>Shift + P ou Shift + PQ</kbd><strong>Master Price Codes</strong><p>Pesquisar e analisar Price Codes e respetivas Worksheets.</p></div><div class="shortcut"><kbd>Shift + R ou Shift + RL</kbd><strong>Master Resource List</strong><p>Consultar e importar recursos.</p></div><div class="shortcut"><kbd>I ou IN ou Shift + I</kbd><strong>Master Indirects</strong><p>Consultar os indiretos do Master.</p></div><div class="shortcut"><kbd>Change Master</kbd><strong>Mudar de Master</strong><p>Selecionar outro trabalho como Master.</p></div></div><div class="btn-row"><button class="btn blue branch-open" data-branch="documents">Explorar documentos do Master</button></div></div></div></section>
+<section class="screen"><div class="wrap"><div class="panel"><div class="eyebrow">O erro dos recursos</div><h2>Utilizar os Price Codes que se adequem ao trabalho antes de importar recursos.</h2><div class="grid grid-2"><div class="card warning"><strong>Método frequente</strong><p>Importar recursos, criar novamente a ficha, reconstruir fórmulas e voltar a definir quantidades e produtividades.</p></div><div class="card success"><strong>Método mais eficiente</strong><p>Procurar primeiro uma ficha tecnicamente compatível, reutilizar a composição e adaptar apenas o que muda.</p></div></div><div class="key-idea">Explorar a importação de recursos faz sentido. Mas deve ser uma decisão consciente, não o método prioritário.</div><div class="btn-row"><button class="btn blue branch-open" data-branch="resources">Explorar importação de recursos</button><button class="btn primary branch-open" data-branch="pricecodes">Explorar reutilização de Price Codes</button></div></div></div></section>
+<section class="screen">
+<div class="wrap"><div class="panel">
+<div class="eyebrow">Descrições diferentes</div>
+<h2>Uma descrição diferente não significa uma composição diferente.</h2>
+<div class="card highlight">
+<strong>Exemplo</strong>
+<p>“Parede interior em bloco” e “Alvenaria interior de bloco” podem ter descrições diferentes e uma estrutura técnica semelhante.</p>
+</div>
+<div class="path">
+<div class="path-step">PROCURAR</div><div class="arrow">→</div>
+<div class="path-step">ANALISAR A COMPOSIÇÃO</div><div class="arrow">→</div>
+<div class="path-step">COMPARAR O ÂMBITO</div><div class="arrow">→</div>
+<div class="path-step"><b>DECIDIR</b></div>
+</div>
+<div class="key-idea">A decisão deve basear-se na lógica técnica da ficha, não apenas na descrição.</div>
+</div></div>
+</section>
+<section class="screen">
+<div class="wrap"><div class="panel">
+<div class="eyebrow">Quatro decisões possíveis</div>
+<h2>Nem tudo deve ser copiado. Nem tudo deve ser criado de novo.</h2>
+<div class="grid grid-4">
+<div class="card success"><strong>Reutilizar</strong><p>A estrutura e o contexto são compatíveis.</p></div>
+<div class="card highlight"><strong>Adaptar</strong><p>A base é válida, mas alguns elementos mudam.</p></div>
+<div class="card warning"><strong>Atualizar</strong><p>A composição é adequada, mas os preços ou produtividades mudaram.</p></div>
+<div class="card risk"><strong>Criar de novo</strong><p>Não existe estrutura compatível ou o âmbito é substancialmente diferente.</p></div>
+</div>
+<div class="instruction">A eficiência não está em copiar mais. Está em decidir melhor.</div>
+</div></div>
+</section>
+<section class="screen">
+<div class="wrap"><div class="panel">
+<div class="eyebrow">Comparação</div>
+<h2>Comparar preços antes de decidir.</h2>
+<div class="grid grid-3">
+<div class="card"><strong>Preço atual</strong><p>O valor usado no orçamento em preparação.</p></div>
+<div class="card"><strong>Preço no Master</strong><p>A referência disponível no trabalho selecionado.</p></div>
+<div class="card highlight"><strong>Diferença</strong><p>Um sinal para validar, atualizar ou investigar.</p></div>
+</div>
+<div class="media-placeholder" style="margin-top:18px">
+<div><strong>CAPTURA REAL DO CANDY</strong><br/><span>Comparação de preços entre o orçamento e o Master</span></div>
+</div>
+<div class="btn-row"><button class="btn blue branch-open" data-branch="compare">Explorar comparação de preços</button></div>
+</div></div>
+</section>
+
+<section class="screen"><div class="wrap"><div class="panel"><div class="eyebrow">Caso integrado</div><h2>Um novo edifício de escritórios.</h2><div class="card highlight"><strong>Situação</strong><p>Existe um trabalho anterior semelhante. As descrições não coincidem totalmente. Alguns preços estão desatualizados. Há Price Codes aproveitáveis, recursos válidos e codificações incompletas.</p></div><h3 style="font-size:26px;margin-top:20px">Perante este cenário, qual é o melhor caminho a seguir?</h3><div class="options case-options" id="caseOptions"><div class="option" data-ok="0"><div class="radio"></div><strong>Criar o novo orçamento de raiz para garantir que tudo fica atualizado.</strong></div><div class="option" data-ok="0"><div class="radio"></div><strong>Importar todos os recursos do trabalho anterior e reconstruir os Price Codes necessários.</strong></div><div class="option" data-ok="1"><div class="radio"></div><strong>Selecionar o Master mais adequado, procurar Price Codes tecnicamente compatíveis, atualizar o que for necessário e completar apenas o que faltar.</strong></div><div class="option" data-ok="0"><div class="radio"></div><strong>Copiar todas as fichas do trabalho anterior e corrigir as diferenças no final.</strong></div></div><div class="feedback" id="caseFb"></div><div class="timeline case-steps" id="caseSteps"><div class="step"><div class="step-num">1</div><div><strong>Selecionar o Master</strong><p>Escolher a referência mais coerente com o novo trabalho.</p></div></div><div class="step"><div class="step-num">2</div><div><strong>Procurar estruturas compatíveis</strong><p>Não limitar a pesquisa a descrições exatamente iguais.</p></div></div><div class="step"><div class="step-num">3</div><div><strong>Comparar preços</strong><p>Identificar o que exige atualização.</p></div></div><div class="step"><div class="step-num">4</div><div><strong>Validar e completar</strong><p>Adaptar, importar ou criar apenas o necessário.</p></div></div></div></div></div></section>
+<section class="screen">
+<div class="wrap"><div class="panel">
+<div class="eyebrow">Desafio 1</div>
+<h2>Encontras no Master um Price Code tecnicamente compatível, mas com preço antigo. O que fazes?</h2>
+<div class="options quiz" data-answer="2">
+<div class="option"><div class="radio"></div><strong>Rejeito toda a ficha e começo do zero.</strong></div>
+<div class="option"><div class="radio"></div><strong>Copio tudo sem validar.</strong></div>
+<div class="option"><div class="radio"></div><strong>Reutilizo a estrutura e atualizo os elementos variáveis.</strong></div>
+<div class="option"><div class="radio"></div><strong>Importo só os recursos e volto a compor a ficha.</strong></div>
+</div>
+<div class="feedback quiz-fb"></div>
+</div></div>
+</section>
+<section class="screen">
+<div class="wrap"><div class="panel">
+<div class="eyebrow">Desafio 2</div>
+<h2>As descrições são diferentes, mas a estrutura técnica parece semelhante. Qual é o passo seguinte?</h2>
+<div class="options quiz" data-answer="1">
+<div class="option"><div class="radio"></div><strong>Ignorar a ficha porque a descrição não coincide.</strong></div>
+<div class="option"><div class="radio"></div><strong>Analisar âmbito, unidade, recursos, fórmula e produtividade.</strong></div>
+<div class="option"><div class="radio"></div><strong>Copiar imediatamente.</strong></div>
+<div class="option"><div class="radio"></div><strong>Alterar apenas a descrição.</strong></div>
+</div>
+<div class="feedback quiz-fb"></div>
+</div></div>
+</section>
+<section class="screen">
+<div class="wrap"><div class="panel">
+<div class="eyebrow">Manter o Master</div>
+<h2>Um bom Master nunca está verdadeiramente terminado.</h2>
+<div class="path">
+<div class="path-step">UTILIZAR</div><div class="arrow">→</div>
+<div class="path-step">VALIDAR</div><div class="arrow">→</div>
+<div class="path-step">CORRIGIR</div><div class="arrow">→</div>
+<div class="path-step">NORMALIZAR</div><div class="arrow">→</div>
+<div class="path-step"><b>MELHORAR</b></div>
+</div>
+<div class="grid grid-2">
+<div class="card success"><strong>Conhecimento confirmado</strong><p>Pode ser incorporado no Master para beneficiar trabalhos futuros.</p></div>
+<div class="card warning"><strong>Informação específica da obra</strong><p>Deve ser removida ou claramente identificada antes de passar a referência.</p></div>
+</div>
+</div></div>
+</section>
+<section class="screen"><div class="hero"><div class="wrap"><div class="panel" style="text-align:center"><div class="eyebrow">Conclusão</div><p class="lead" style="margin:0 auto 20px">Ao longo deste percurso viste que um Master bem estruturado é muito mais do que uma lista de recursos. É uma forma de transformar conhecimento já desenvolvido e validado em conhecimento reutilizável.</p><div class="grid grid-3" style="text-align:left"><div class="card"><strong>Escolher</strong><p>O Master mais adequado ao trabalho.</p></div><div class="card"><strong>Procurar</strong><p>Price Codes e recursos já existentes.</p></div><div class="card"><strong>Reutilizar e adaptar</strong><p>Em vez de reconstruir.</p></div><div class="card"><strong>Importar</strong><p>Quando faz sentido.</p></div><div class="card"><strong>Validar e atualizar</strong><p>Antes de aplicar.</p></div><div class="card"><strong>Melhorar o Master</strong><p>Com o conhecimento adquirido em cada novo trabalho.</p></div></div><div class="key-idea"><strong>Mais eficiência não significa menos rigor. Significa reutilizar melhor.</strong><br/><span style="font-size:16px;color:var(--muted)">O conhecimento já existe. O verdadeiro segredo está em saber encontrá-lo, validá-lo e voltar a utilizá-lo.</span></div><div class="btn-row"><button class="btn" id="reviewBtn">REVER PERCURSO</button><button class="btn primary" id="completeBtn">CONCLUIR MÓDULO</button></div></div></div></div></section>
+</main>
+<footer class="footer">
+<div class="nav"><button class="btn" id="prevBtn">Anterior</button><button class="btn primary" id="nextBtn">Seguinte</button></div>
+<div class="progress-wrap"><div class="progress"><div class="bar" id="bar"></div></div><div class="branch-markers" id="branchMarkers"></div></div>
+<div class="counter" id="counter"></div>
+</footer>
+</div>
+<div class="modal" id="modal">
+<div class="modal-card">
+<div class="modal-head">
+<div><strong id="modalTitle">Aprofundamento</strong><small id="modalSub" style="display:block;color:var(--muted)"></small></div>
+<button class="btn ghost" id="closeModal">Fechar ×</button>
+</div>
+<div class="modal-body" id="modalBody"><div class="sub-nav-top"><button class="btn" id="subPrevTop">Anterior</button><div class="sub-count" id="subCountTop"></div><button class="btn primary" id="subNextTop">Seguinte</button></div><div id="modalBody"></div></div>
+<div class="sub-footer">
+<button class="btn" id="subPrev">Anterior</button>
+<div class="sub-progress" id="subProgress"></div>
+<button class="btn primary" id="subNext">Seguinte</button>
+</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const screens=[...document.querySelectorAll('.screen')];
+const prevBtn=document.getElementById('prevBtn');
+const nextBtn=document.getElementById('nextBtn');
+const bar=document.getElementById('bar');
+const counter=document.getElementById('counter');
+const toast=document.getElementById('toast');
+let current=0;
+
+function showToast(msg){
+  toast.textContent=msg; toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'),2600);
+}
+function showScreen(i){
+  current=Math.max(0,Math.min(i,screens.length-1));
+  screens.forEach((s,idx)=>s.classList.toggle('active',idx===current));
+  prevBtn.disabled=current===0;
+  nextBtn.disabled=current===screens.length-1;
+  bar.style.width=`${((current+1)/screens.length)*100}%`;
+  counter.textContent=`Percurso ${current+1} de ${screens.length}`;
+}
+document.getElementById('startBtn').onclick=()=>showScreen(1);
+prevBtn.onclick=()=>showScreen(current-1);
+nextBtn.onclick=()=>showScreen(current+1);
+document.getElementById('reviewBtn').onclick=()=>
+function initOptionalVideos(){
+  document.querySelectorAll('video[data-optional-video]').forEach(video=>{
+    const slot=video.closest('.video-slot');
+    const missing=slot ? slot.querySelector('.video-missing') : null;
+    const hide=()=>{ if(missing) missing.style.display='none'; };
+    const show=()=>{ if(missing) missing.style.display='grid'; };
+    video.addEventListener('loadedmetadata',hide);
+    video.addEventListener('canplay',hide);
+    video.addEventListener('error',show);
+    if(video.readyState>=1) hide();
+  });
+}
+function initBranchMarkers(){
+  const holder=document.getElementById('branchMarkers');
+  if(!holder) return;
+  holder.innerHTML='';
+  const indices=[...new Set([...document.querySelectorAll('.branch-open')].map(btn=>screens.indexOf(btn.closest('.screen'))).filter(i=>i>=0))];
+  indices.forEach(i=>{
+    const m=document.createElement('span');
+    m.className='branch-marker';
+    m.title='Este ponto contém um subconteúdo opcional';
+    m.style.left=`${((i+.5)/screens.length)*100}%`;
+    holder.appendChild(m);
+  });
+}
+
+initOptionalVideos();
+initBranchMarkers();
+showScreen(0);
+document.getElementById('completeBtn').onclick=()=>showToast('Módulo concluído.');
+
+document.querySelectorAll('#diag .option').forEach(opt=>{
+  opt.onclick=()=>{
+    document.querySelectorAll('#diag .option').forEach(o=>o.classList.remove('selected'));
+    opt.classList.add('selected');
+    const fb=document.getElementById('diagFb');
+    fb.innerHTML=`<strong>Reflexão:</strong> ${opt.dataset.fb}`;
+    fb.classList.add('show');
+  }
+});
+
+document.querySelectorAll('.quiz').forEach(q=>{
+  const opts=[...q.querySelectorAll('.option')];
+  const fb=q.parentElement.querySelector('.quiz-fb');
+  opts.forEach((opt,idx)=>{
+    opt.onclick=()=>{
+      opts.forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+      const ok=idx===Number(q.dataset.answer);
+      fb.innerHTML=ok
+        ? '<strong>Boa decisão.</strong> A eficiência está em aproveitar a estrutura válida e rever o que depende do contexto.'
+        : '<strong>Atenção.</strong> Esta escolha cria retrabalho ou transporta informação sem validação suficiente.';
+      fb.classList.add('show');
+    }
+  })
+});
+
+
+document.querySelectorAll('#caseOptions .option').forEach(opt=>{opt.onclick=()=>{document.querySelectorAll('#caseOptions .option').forEach(o=>o.classList.remove('selected'));opt.classList.add('selected');const ok=opt.dataset.ok==='1';const fb=document.getElementById('caseFb');fb.innerHTML=ok?'<strong>É o melhor caminho.</strong> Primeiro aproveita-se o conhecimento já estruturado; depois valida-se, atualiza-se e completa-se apenas o necessário.':'<strong>Há uma abordagem mais eficiente.</strong> O objetivo não é começar do zero nem copiar tudo, mas reutilizar de forma criteriosa.';fb.classList.add('show');if(ok)document.getElementById('caseSteps').classList.add('show')}});
+
+const branchData={
+start:{title:'Começar um trabalho a partir de um Master',sub:'Boas práticas + demonstração no Candy',slides:[
+`<div class="eyebrow">Antes de começar</div><h2>Escolher o Master é uma decisão técnica.</h2><div class="grid grid-2"><div class="card success"><strong>Confirmar</strong><p>Tipologia do trabalho, organização, codificações, moeda, contexto e qualidade da informação.</p></div><div class="card warning"><strong>Evitar</strong><p>Selecionar apenas porque é o trabalho mais recente ou porque tem um nome semelhante.</p></div></div><div class="key-idea">O Master certo reduz trabalho. O Master errado multiplica correções.</div>`,
+`<div class="eyebrow">New Estimate Setup</div><h2>Selecionar o Master logo na criação.</h2><div class="instruction">A boa prática é associar o Master no momento em que o novo trabalho é preparado, para beneficiar da herança automática das definições aplicáveis.</div>`,
+`<div class="eyebrow">Vídeo</div><h2>Como começar um novo trabalho.</h2><div class="video-wrap"><video controls preload="metadata"><source src="NOVO_TRABALHO.mp4" type="video/mp4">O seu navegador não suporta vídeo HTML5.</video></div><div class="instruction">Demonstração real no Candy CCS: criação do trabalho e seleção do Master no New Estimate Setup.</div>`,
+`<div class="eyebrow">Depois de criar</div><h2>Confirmar o que foi herdado.</h2><div class="grid grid-3"><div class="card"><strong>Definições</strong><p>Codificações, classificações e parâmetros.</p></div><div class="card"><strong>Documentos</strong><p>Acesso às listas e estruturas do Master.</p></div><div class="card highlight"><strong>Validação</strong><p>Verificar moeda, impostos, indiretos e elementos específicos.</p></div></div>`]},
+documents:{title:'Explorar documentos do Master',sub:'Quatro acessos rápidos e respetivas demonstrações',slides:[
+`<div class="eyebrow">Shift + B ou Shift + BQ</div><h2>Master Bill of Quantities</h2><div class="video-wrap"><video controls preload="metadata"><source src="SHIFT_B.mp4" type="video/mp4">O seu navegador não suporta vídeo HTML5.</video></div>`,
+`<div class="eyebrow">Shift + P ou Shift + PQ</div><h2>Master Price Codes</h2><div class="video-wrap"><video controls preload="metadata"><source src="SHIFT_P.mp4" type="video/mp4">O seu navegador não suporta vídeo HTML5.</video></div>`,
+`<div class="eyebrow">Shift + R ou Shift + RL</div><h2>Master Resource List</h2><div class="video-wrap"><video controls preload="metadata"><source src="SHIFT_R.mp4" type="video/mp4">O seu navegador não suporta vídeo HTML5.</video></div>`,
+`<div class="eyebrow">I ou IN ou Shift + I</div><h2>Master Indirects</h2><div class="video-wrap"><video controls preload="metadata"><source src="SHIFT_I.mp4" type="video/mp4">O seu navegador não suporta vídeo HTML5.</video></div>`]},
+resources:{title:'Importação de recursos',sub:'Quando faz sentido e o que validar',slides:[
+`<div class="eyebrow">Decisão consciente</div><h2>Deve importar todos os recursos do Master?</h2><div class="grid grid-3"><div class="card success"><strong>Não, por regra</strong><p>Ao importar os Price Codes necessários do Master, são também importados os recursos que fazem parte das respetivas composições.</p></div><div class="card"><strong>Recurso específico</strong><p>Se precisar de acrescentar um recurso, procure-o na Master Resource List (Shift + R) e traga apenas o recurso que pretende utilizar.</p></div><div class="card warning"><strong>Importar uma família</strong><p>Pode fazer sentido quando existe uma grande variedade de recursos da mesma família a utilizar, por exemplo, perfis metálicos.</p></div></div><div class="key-idea">A regra é simples: não importar por antecipação o que pode ser trazido quando for necessário.</div>`,
+`<div class="eyebrow">Importar de um Master diferente do Master inicial</div><h2>Verificar dependências e duplicações.</h2><div class="grid grid-3"><div class="card"><strong>Código</strong><p>Evitar duplicados ou conflitos.</p></div><div class="card"><strong>Unidade</strong><p>Confirmar compatibilidade.</p></div><div class="card"><strong>Preço</strong><p>Validar atualidade e moeda.</p></div><div class="card"><strong>Tipo e grupo</strong><p>Manter coerência de classificação.</p></div><div class="card"><strong>Complexos</strong><p>Confirmar os recursos dependentes.</p></div><div class="card"><strong>Descrição</strong><p>Garantir identificação clara.</p></div></div>`,
+`<div class="eyebrow">Vídeo</div><h2>Importar recursos no Candy.</h2><div class="video-wrap video-slot"><video controls preload="metadata" data-optional-video="IMPORTAR_RECURSOS.mp4"><source src="IMPORTAR_RECURSOS.mp4" type="video/mp4">O seu navegador não suporta vídeo HTML5.</video><div class="video-missing"><div><strong>Vídeo em preparação</strong><span>Importar recursos no Candy CCS.<br>Ficheiro esperado: IMPORTAR_RECURSOS.mp4</span></div></div></div>`,
+`<div class="eyebrow">Depois de importar</div><h2>Confirmar o resultado.</h2><div class="timeline"><div class="step"><div class="step-num">1</div><div><strong>Pesquisar o recurso</strong><p>Confirmar que ficou disponível.</p></div></div><div class="step"><div class="step-num">2</div><div><strong>Rever preço e moeda</strong><p>Não assumir que continuam válidos.</p></div></div><div class="step"><div class="step-num">3</div><div><strong>Validar classificações</strong><p>Tipo, grupo e codificações.</p></div></div></div>`]},
+pricecodes:{title:'Reutilização de Price Codes',sub:'Evitar reconstruir composições já existentes',slides:[
+`<div class="eyebrow">Primeiro procurar</div><h2>Antes de compor uma ficha, verificar se já existe uma estrutura compatível.</h2><div class="key-idea">Importar apenas recursos e reconstruir a composição deve ser uma decisão, não um hábito.</div>`,
+`<div class="eyebrow">Analisar</div><h2>O que validar numa ficha?</h2><div class="grid grid-3"><div class="card"><strong>Âmbito</strong><p>O que está incluído e excluído.</p></div><div class="card"><strong>Unidade</strong><p>Compatibilidade da medição.</p></div><div class="card"><strong>Recursos</strong><p>Tipos, quantidades e relações.</p></div><div class="card"><strong>Fórmulas</strong><p>Lógica de cálculo.</p></div><div class="card"><strong>Produtividade</strong><p>Adequação ao novo contexto.</p></div><div class="card"><strong>Preço</strong><p>Atualidade dos valores.</p></div></div>`,
+`<div class="eyebrow">Vídeo</div><h2>Reutilizar uma composição do Master.</h2><div class="video-wrap video-slot"><video controls preload="metadata" data-optional-video="REUTILIZAR_PRICE_CODES.mp4"><source src="REUTILIZAR_PRICE_CODES.mp4" type="video/mp4">O seu navegador não suporta vídeo HTML5.</video><div class="video-missing"><div><strong>Vídeo em preparação</strong><span>Pesquisar, analisar, reutilizar e adaptar um Price Code.<br>Ficheiro esperado: REUTILIZAR_PRICE_CODES.mp4</span></div></div></div>`]},
+compare:{title:'Comparação de preços',sub:'Usar diferenças como sinal de validação',slides:[
+`<div class="eyebrow">Objetivo</div><h2>Comparar não é copiar o preço do Master.</h2><div class="key-idea">A diferença ajuda a identificar o que deve ser confirmado, atualizado ou investigado.</div>`,
+`<div class="eyebrow">Demonstração</div><h2>Onde comparar no Candy.</h2><div class="video-wrap video-slot"><video controls preload="metadata" data-optional-video="COMPARAR_PRECOS.mp4"><source src="COMPARAR_PRECOS.mp4" type="video/mp4">O seu navegador não suporta vídeo HTML5.</video><div class="video-missing"><div><strong>Vídeo em preparação</strong><span>Comparar preços entre o orçamento atual e o Master.<br>Ficheiro esperado: COMPARAR_PRECOS.mp4</span></div></div></div>`,
+`<div class="eyebrow">Decidir</div><h2>Três respostas possíveis.</h2><div class="grid grid-3"><div class="card success"><strong>Manter</strong><p>O preço atual está validado.</p></div><div class="card highlight"><strong>Atualizar</strong><p>Existe uma referência mais adequada.</p></div><div class="card warning"><strong>Investigar</strong><p>A diferença exige compreender a causa.</p></div></div>`]}
+};
+
+const modal=document.getElementById('modal');
+const modalTitle=document.getElementById('modalTitle');
+const modalSub=document.getElementById('modalSub');
+const modalBody=document.getElementById('modalBody');
+const subPrev=document.getElementById('subPrev');
+const subNext=document.getElementById('subNext');
+const subPrevTop=document.getElementById('subPrevTop');
+const subNextTop=document.getElementById('subNextTop');
+const subProgress=document.getElementById('subProgress');
+const subCountTop=document.getElementById('subCountTop');
+let activeBranch=null, subIndex=0;
+
+function renderBranch(){
+  const b=branchData[activeBranch];
+  modalTitle.textContent=b.title;
+  modalSub.textContent=b.sub;
+  modalBody.innerHTML=`<div class="subscreen active">${b.slides[subIndex]}</div>`;
+  const txt=`Aprofundamento ${subIndex+1} de ${b.slides.length}`;
+  subProgress.textContent=txt; subCountTop.textContent=txt;
+  subPrev.disabled=subPrevTop.disabled=subIndex===0;
+  subNext.textContent=subNextTop.textContent=subIndex===b.slides.length-1?'Voltar ao percurso':'Seguinte';
+}
+document.querySelectorAll('.branch-open').forEach(btn=>{
+  btn.onclick=()=>{
+    activeBranch=btn.dataset.branch;subIndex=0;renderBranch();modal.classList.add('open');
+  }
+});
+function subGo(delta){const b=branchData[activeBranch];if(delta<0&&subIndex>0){subIndex--;renderBranch();return}if(delta>0&&subIndex<b.slides.length-1){subIndex++;renderBranch();return}if(delta>0&&subIndex===b.slides.length-1)modal.classList.remove('open')}
+subPrev.onclick=()=>subGo(-1); subNext.onclick=()=>subGo(1); subPrevTop.onclick=()=>subGo(-1); subNextTop.onclick=()=>subGo(1);
+document.getElementById('closeModal').onclick=()=>modal.classList.remove('open');
+modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open')});
+
+function initOptionalVideos(){
+  document.querySelectorAll('video[data-optional-video]').forEach(video=>{
+    const slot=video.closest('.video-slot');
+    const missing=slot ? slot.querySelector('.video-missing') : null;
+    const hide=()=>{ if(missing) missing.style.display='none'; };
+    const show=()=>{ if(missing) missing.style.display='grid'; };
+    video.addEventListener('loadedmetadata',hide);
+    video.addEventListener('canplay',hide);
+    video.addEventListener('error',show);
+    if(video.readyState>=1) hide();
+  });
+}
+function initBranchMarkers(){
+  const holder=document.getElementById('branchMarkers');
+  if(!holder) return;
+  holder.innerHTML='';
+  const indices=[...new Set([...document.querySelectorAll('.branch-open')].map(btn=>screens.indexOf(btn.closest('.screen'))).filter(i=>i>=0))];
+  indices.forEach(i=>{
+    const m=document.createElement('span');
+    m.className='branch-marker';
+    m.title='Este ponto contém um subconteúdo opcional';
+    m.style.left=`${((i+.5)/screens.length)*100}%`;
+    holder.appendChild(m);
+  });
+}
+
+initOptionalVideos();
+initBranchMarkers();
+showScreen(0);
+</script>
+</body>
+</html>
